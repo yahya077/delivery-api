@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const CustomError = require('../helpers/customError');
 const asyncHandler = require('../middlewares/async');
+const sendEmail = require('../helpers/sendMail');
 const User = require('../models/User');
 const { checkDuplicated, checkLogin } = require('../helpers/mongoErrorHandler');
 
@@ -26,6 +27,9 @@ exports.register = asyncHandler(async (req, res, next) => {
         role,
         status
     })
+
+    // send token email
+    await sendEmailToken(user);
 
     // return token
     sendTokenResponse(user, 200, res);
@@ -139,3 +143,24 @@ const sendTokenResponse = (user, statusCode, res) => {
     email != undefined ? fields.email = email : undefined;
     return fields
   }
+
+  // Send email confirmation
+  const sendEmailToken = async (user) => {
+    // grab token and send to email
+    const confirmEmailToken = user.generateEmailConfirmToken();
+
+    // Create reset url
+    const confirmEmailURL = `${req.protocol}://${req.get(
+        'host',
+    )}/api/v1/auth/confirmemail?token=${confirmEmailToken}`;
+
+    const message = `You are receiving this email because you need to confirm your email address. Please make a GET request to: \n\n ${confirmEmailURL}`;
+
+    user.save({ validateBeforeSave: false });
+
+    const sendResult = await sendEmail({
+        email: user.email,
+        subject: 'Email confirmation token',
+        message,
+    });
+}
