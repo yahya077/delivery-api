@@ -30,7 +30,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     req.user = await User.findById(decoded.id);
 
-    next();
+    if(req.user.status === 'active') next(); // if user is active
+    else return next(new CustomError('Not authorized to access this route', 403));
+
   } catch (err) {
     return next(new CustomError('Not authorized to access this route', 403));
   }
