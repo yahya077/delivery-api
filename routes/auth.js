@@ -1,12 +1,12 @@
 const express = require('express');
 
-const { register, login, logout, getMe, updateDetails } = require('../http/controllers/auth');
+const { register, login, logout, getMe, updateDetails, updatePassword } = require('../http/controllers/auth');
 const validate = require('../http/providers/ValidatorServiceProvider');
 const {checkValidationError} = require('../http/helpers/ValidationErrorResponse');
 
 const router = express.Router();
 
-const { protect } = require('../http/middlewares/auth');
+const { protect, authorize } = require('../http/middlewares/auth');
 
 
 router
@@ -17,7 +17,10 @@ router
     .get('/logout',protect, logout)
     .get('/me', protect, getMe);
 
-router.put('/updatedetails', protect, updateDetails);
+router
+    .put('/updatedetails', protect, authorize('customer', 'admin'), updateDetails)
+    .put('/updatepassword', protect, updatePassword);
+
 
 
 

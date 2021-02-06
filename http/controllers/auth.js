@@ -75,7 +75,9 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
     const { firstName, lastName, email } = req.body;
+
     await checkDuplicated(User,{ email },'email', res);
+
     var fieldsToUpdate = checkFilledFields(firstName, lastName, email);    
   
     const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
@@ -87,6 +89,23 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
       success: true,
       data: user,
     });
+  });
+
+// @desc      Update password
+// @route     PUT /api/v1/auth/updatepassword
+// @access    Private
+exports.updatePassword = asyncHandler(async (req, res, next) => {
+    const user = await User.findById(req.user.id).select('+password');
+  
+    // Check current password
+    if (!(await user.matchPassword(req.body.currentPassword))) {
+      return next(new CustomError('Password is incorrect', 401));
+    }
+  
+    user.password = req.body.newPassword;
+    await user.save();
+  
+    sendTokenResponse(user, 200, res);
   });
 
 
