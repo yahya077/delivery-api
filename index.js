@@ -17,9 +17,11 @@ if(process.env.NODE_ENV === 'development'){
 
 // Routes
 const authRoute = require('./routes/auth');
+const categoryRoute = require('./routes/category');
 
 // Routes initialize
 app.use('/api/v1/auth', authRoute);
+app.use('/api/v1/categories', categoryRoute);
 
 
 /** Get port from environment and store in Express. */

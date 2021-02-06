@@ -39,7 +39,27 @@ const register = _ => {
         
 }
 
+const category = _ => {
+    return [
+        body('name')
+            .trim()
+            .isLength({min:5}).withMessage('Name must be at least 5 characters')
+            .isLength({max:40}).withMessage('Name can not be more than 40 characters'),
+        body('description')
+            .trim()
+            .isLength({min:5}).withMessage('Name must be at least 5 characters')
+            .isLength({max:240}).withMessage('Name can not be more than 240 characters'),
+        body('mobileIcon')
+            .trim(),
+        body('webIcon')
+            .trim(),
+        body('coverImage')
+            .trim()
+        ]
+}
+
 module.exports = {
     register,
-    login
+    login,
+    category
 }
