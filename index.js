@@ -14,8 +14,13 @@ app.use(express.json());
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
-// Api Root { v1 }
-app.use('/api/v1/', (req, res) => res.send({success:true, data:'This a full functional delivery API '}));
+
+// Routes
+const authRoute = require('./routes/auth');
+
+// Routes initialize
+app.use('/api/v1/auth', authRoute);
+
 
 /** Get port from environment and store in Express. */
 const port = process.env.PORT || "3000";
