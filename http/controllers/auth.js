@@ -70,6 +70,25 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     });
 });
 
+// @desc      Update user details
+// @route     PUT /api/v1/auth/updatedetails
+// @access    Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+    const { firstName, lastName, email } = req.body;
+    await checkDuplicated(User,{ email },'email', res);
+    var fieldsToUpdate = checkFilledFields(firstName, lastName, email);    
+  
+    const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+      new: true,
+      runValidators: true,
+    });
+  
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  });
+
 
 // Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
@@ -92,3 +111,12 @@ const sendTokenResponse = (user, statusCode, res) => {
       token,
     });
   };
+
+  // Check which fields will update
+  const checkFilledFields = (firstName, lastName, email) => {
+    const fields = {};
+    firstName != undefined ? fields.firstName = firstName : undefined;
+    lastName != undefined ? fields.lastName = lastName : undefined;
+    email != undefined ? fields.email = email : undefined;
+    return fields
+  }

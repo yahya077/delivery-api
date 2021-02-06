@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { register, login, logout, getMe } = require('../http/controllers/auth');
+const { register, login, logout, getMe, updateDetails } = require('../http/controllers/auth');
 const validate = require('../http/providers/ValidatorServiceProvider');
 const {checkValidationError} = require('../http/helpers/ValidationErrorResponse');
 
@@ -16,6 +16,9 @@ router
 router
     .get('/logout',protect, logout)
     .get('/me', protect, getMe);
+
+router.put('/updatedetails', protect, updateDetails);
+
 
 
 module.exports = router;
