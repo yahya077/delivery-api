@@ -3,6 +3,7 @@ const os = require('os');
 const morgan = require('morgan');
 const http = require('http');
 const express = require('express');
+const db = require("./config/db");
 
 const app = express();
 
