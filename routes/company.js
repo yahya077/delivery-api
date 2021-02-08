@@ -6,7 +6,8 @@ const { getCompanies,
         getCompany,
         deleteCompany,
         updateCompany,
-        createCompany
+        createCompany,
+        getCompaniesInRadius
 } = require('../http/controllers/company');
 
 const Company = require('../http/models/Company');
@@ -25,5 +26,8 @@ router.route('/:id')
     .get(protect, authorize('admin'), getCompany)
     .delete(protect, authorize('admin'), deleteCompany)
     .put(protect,authorize('admin'), updateCompany);
+
+router.route('/radius/:zipcode/:distance').get(advancedResults(Company), getCompaniesInRadius);
+
     
 module.exports = router;

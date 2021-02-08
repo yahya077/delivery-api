@@ -1,9 +1,11 @@
+const geocoder = require('../../utils/geocoder');
+
 const advancedResults = (model, populate) => async (req, res, next) => {
     let query;
   
     // Copy req.query
     const reqQuery = { ...req.query };
-  
+    
     // Fields to exclude
     const removeFields = ['select', 'sort', 'page', 'limit'];
   
@@ -15,10 +17,11 @@ const advancedResults = (model, populate) => async (req, res, next) => {
   
     // Create operators ($gt, $gte, etc)
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
-  
-    // Finding resource
+
+    const parsedQStr = JSON.parse(queryStr);
+    // Finding resource   
     query = model.find(JSON.parse(queryStr));
-  
+
     // Select Fields
     if (req.query.select) {
       const fields = req.query.select.split(',').join(' ');
@@ -38,17 +41,38 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     const limit = parseInt(req.query.limit, 10) || 25;
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
-    const total = await model.countDocuments(JSON.parse(queryStr));
-  
-    query = query.skip(startIndex).limit(limit);
-  
+    let total;
+    if(req.params.zipcode){
+      const { zipcode, distance } = req.params;
+
+      // Get lat/lng from geocoder
+      const loc = await geocoder.geocode(zipcode);
+      const lat = loc[0].latitude;
+      const lng = loc[0].longitude;
+
+      // Calc radius using radians
+      // Divide dist by radius of Earth
+      // Earth Radius = 3,963 mi / 6,378 km
+      const radius = distance / 6.378;
+      const q = JSON.parse(queryStr);
+      total = await model.countDocuments({location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }});
+
+      query = query
+                .find({location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }})
+                .skip(startIndex)
+                .limit(limit);
+    }else{
+      total = await model.countDocuments(JSON.parse(queryStr));
+
+      query = query.skip(startIndex).limit(limit);
+    }
+
     if (populate) {
       query = query.populate(populate);
     }
   
     // Executing query
     const results = await query;
-  
     // Pagination result
     const pagination = {};
   

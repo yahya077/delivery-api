@@ -1,5 +1,6 @@
 const CustomError = require('../helpers/customError');
 const asyncHandler = require('../middlewares/async');
+const geocoder = require('../../utils/geocoder');
 const Company = require('../models/Company');
 const User = require('../models/User');
 
@@ -42,6 +43,19 @@ exports.createCompany = asyncHandler(async (req, res, next) => {
       );
     }
 
+  // Check for created company
+  const publishedBootcamp = await Company.findOne({ user: req.params.userId });
+
+  // Every user has only one company
+  if (publishedBootcamp) {
+    return next(
+      new CustomError(
+        `The user with ID ${req.user.id} has already created a company`,
+        400
+      )
+    );
+  }
+
   const company = await Company.create(req.body);
 
     res.status(201).json({
@@ -80,4 +94,11 @@ exports.deleteCompany = asyncHandler(async (req, res, next) => {
     await company.remove();
   
     res.status(200).json({ success: true, data: {} });
+});
+
+// @desc      Get companies within a radius
+// @route     GET /api/v1/companies/radius/:zipcode/:distance
+// @access    Public
+exports.getCompaniesInRadius = asyncHandler(async (req, res, next) => {
+  res.status(200).json(res.advancedResults);
 });
