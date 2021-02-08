@@ -58,8 +58,31 @@ const category = _ => {
         ]
 }
 
+const company = _ => {
+    return [
+        body('brandName')
+            .trim()
+            .isLength({min:2}).withMessage('Brand name must be at least 2')
+            .isLength({max:20}).withMessage('Brand name can not be longer than 20 characters'),
+        body('phone')
+            .trim()
+            .isLength({min:10}).withMessage('Phone number can not be less than 10 characters')
+            .isLength({max:10}).withMessage('Phone number can not be longer than 10 characters'),
+        body('address')
+            .trim()
+            .notEmpty().withMessage('Address can not be empty'),
+        body('addressDescription')
+            .trim()
+            .notEmpty().withMessage('Address description can not be empty'),
+        body('type')
+            .trim()
+            .notEmpty().withMessage('Type can not be empty'),
+        ]
+}
+
 module.exports = {
     register,
     login,
-    category
+    category,
+    company
 }
