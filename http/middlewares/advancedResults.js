@@ -1,6 +1,7 @@
 const geocoder = require('../../utils/geocoder');
+const CustomError = require('../helpers/customError');
 
-const advancedResults = (model, populate) => async (req, res, next) => {
+const advancedResults = (model, populate, byFilter) => async (req, res, next) => {
     let query;
   
     // Copy req.query
@@ -18,9 +19,18 @@ const advancedResults = (model, populate) => async (req, res, next) => {
     // Create operators ($gt, $gte, etc)
     queryStr = queryStr.replace(/\b(gt|gte|lt|lte|in)\b/g, match => `$${match}`);
 
-    const parsedQStr = JSON.parse(queryStr);
     // Finding resource   
     query = model.find(JSON.parse(queryStr));
+
+    if(req.query.category){
+      var ObjectID = require('mongodb').ObjectID;
+      if(!ObjectID.isValid(req.query.category))
+          return next(new CustomError(`Bootcamp not found with id of ${req.query.category}`, 404))
+    }
+
+    if (populate) {
+      query = query.populate(populate);
+    }
 
     // Select Fields
     if (req.query.select) {
@@ -61,14 +71,18 @@ const advancedResults = (model, populate) => async (req, res, next) => {
                 .find({location: { $geoWithin: { $centerSphere: [[lng, lat], radius] } }})
                 .skip(startIndex)
                 .limit(limit);
+    }else if(req.params.id){
+      if(byFilter = 'company'){
+      total = await model.countDocuments({company: req.params.id});
+      query = query
+      .find({company: req.params.id})
+      .skip(startIndex)
+      .limit(limit);
+      }
     }else{
       total = await model.countDocuments(JSON.parse(queryStr));
 
       query = query.skip(startIndex).limit(limit);
-    }
-
-    if (populate) {
-      query = query.populate(populate);
     }
   
     // Executing query

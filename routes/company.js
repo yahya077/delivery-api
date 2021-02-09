@@ -12,14 +12,28 @@ const { getCompanies,
 
 const Company = require('../http/models/Company');
 
+//Include other resource router
+const menuItemRouter = require('./menuItem');
+
 const router = express.Router({ mergeParams: true });
 
 const advancedResults = require('../http/middlewares/advancedResults');
-
 const { protect, authorize } = require('../http/middlewares/auth');
 
+// Re-route into other resource routers
+router.use('/:id/menu-items', menuItemRouter);
+
+
 router.route('/')
-    .get(advancedResults(Company), getCompanies)
+    .get(advancedResults(Company,[
+      {
+        path: 'category',
+        select: 'name'
+      },
+      {
+        path: 'menuItems'
+      }
+    ]), getCompanies)
     .post(protect, authorize('admin'),validate.company(), checkValidationError, createCompany);
 
 router.route('/:id')
@@ -27,7 +41,14 @@ router.route('/:id')
     .delete(protect, authorize('admin'), deleteCompany)
     .put(protect,authorize('admin'), updateCompany);
 
-router.route('/radius/:zipcode/:distance').get(advancedResults(Company), getCompaniesInRadius);
+router.route('/radius/:zipcode/:distance').get(advancedResults(Company,
+  [{
+    path: 'category',
+    select: 'name'
+  },
+  {
+    path: 'menuItems'
+  }]
+  ), getCompaniesInRadius);
 
-    
 module.exports = router;

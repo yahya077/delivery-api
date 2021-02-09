@@ -57,6 +57,11 @@ const CompanySchema = new mongoose.Schema({
           'Vegan Restaurant'
         ]
     },
+    category: [{
+      type: mongoose.Schema.ObjectId,
+      ref: 'Category',
+      required: true
+    }],
     averageRating: {
         type: Number,
         min: [1, 'Rating must be at least 1'],
@@ -97,5 +102,13 @@ CompanySchema.pre('save', async function(next) {
     this.address = undefined;
     next();
   });
+
+// Reverse populate with virtuals
+CompanySchema.virtual('menuItems', {
+  ref: 'MenuItem',
+  localField: '_id',
+  foreignField: 'company',
+  justOne: false
+});
 
 module.exports = mongoose.model('Company', CompanySchema);

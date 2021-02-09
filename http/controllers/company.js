@@ -43,6 +43,15 @@ exports.createCompany = asyncHandler(async (req, res, next) => {
       );
     }
 
+    if (user.role != 'company') {
+      return next(
+        new CustomError(
+          `The user with ID ${req.params.userId} is not a company`,
+          404
+        )
+      );
+    }
+
   // Check for created company
   const publishedBootcamp = await Company.findOne({ user: req.params.userId });
 

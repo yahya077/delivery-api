@@ -80,9 +80,35 @@ const company = _ => {
         ]
 }
 
+const menuItem = _ => {
+    return [
+        body('name')
+            .trim()
+            .isLength({min:4}).withMessage('Name must be at least 4')
+            .isLength({max:40}).withMessage('Brand name can not be longer than 30 characters'),
+        body('description')
+            .trim()
+            .isLength({min:5}).withMessage('Description can not be less than 5 characters')
+            .isLength({max:540}).withMessage('Description can not be longer than 540 characters'),
+        body('menuName')
+            .trim()
+            .notEmpty().withMessage('Address can not be empty'),
+        body('category')
+            .trim()
+            .notEmpty().withMessage('Category can not be empty'),
+        body('company')
+            .trim()
+            .notEmpty().withMessage('Company can not be empty'),
+        body('price')
+            .trim()
+            .notEmpty().withMessage('Price can not be empty'),
+        ]
+}
+
 module.exports = {
     register,
     login,
     category,
-    company
+    company,
+    menuItem
 }
