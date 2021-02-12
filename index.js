@@ -21,6 +21,8 @@ const userRoute = require('./routes/user');
 const categoryRoute = require('./routes/category');
 const companyRoute = require('./routes/company');
 const menuItemRoute = require('./routes/menuItem');
+const customerRoute = require('./routes/customer');
+const addressRoute = require('./routes/address');
 
 // Routes initialize
 app.use('/api/v1/auth', authRoute);
@@ -28,6 +30,8 @@ app.use('/api/v1/users', userRoute);
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/companies', companyRoute);
 app.use('/api/v1/menu-items', menuItemRoute);
+app.use('/api/v1/customers', customerRoute);
+app.use('/api/v1/addresses', addressRoute);
 
 
 /** Get port from environment and store in Express. */

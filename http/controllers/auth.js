@@ -3,6 +3,7 @@ const CustomError = require('../helpers/customError');
 const asyncHandler = require('../middlewares/async');
 const sendEmail = require('../helpers/sendMail');
 const User = require('../models/User');
+const Customer = require('../models/Customer');
 const { checkDuplicated, checkLogin } = require('../helpers/mongoErrorHandler');
 
 // @desc      Register user
@@ -27,6 +28,9 @@ exports.register = asyncHandler(async (req, res, next) => {
         role,
         status
     })
+
+    if(role === 'customer' || role === "" || role === undefined)
+      await createCustomer(user);
 
     // send token email
     await sendEmailToken(user, req);
@@ -275,3 +279,11 @@ const sendEmailToken = async (user, req) => {
         message,
     });
 }
+
+// Create Customer if role is a customer
+const createCustomer = asyncHandler(async (user) => {
+  await Customer.create({
+    name: user.firstName + " " + user.lastName,
+    user: user._id,
+  });
+});
