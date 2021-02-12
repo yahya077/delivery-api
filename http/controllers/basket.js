@@ -1,6 +1,7 @@
 const CustomError = require('../helpers/customError');
 const asyncHandler = require('../middlewares/async');
 const Basket = require('../models/Basket');
+const Customer = require('../models/Customer');
 const InOrder = require('../models/InOrder');
 const MenuItem = require('../models/MenuItem');
 
@@ -17,6 +18,7 @@ exports.getCustomerBaskets = asyncHandler( async (req, res, next) => {
 // @route     POST /api/v1/customers/:customerId/baskets/addItem
 // @access    Private
 exports.addItemToBasket = asyncHandler( async (req, res, next) => {
+    const customer = Customer.findById(req.params.customerId);
     if(req.user.role != 'admin' && customer.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)
@@ -29,9 +31,8 @@ exports.addItemToBasket = asyncHandler( async (req, res, next) => {
             new CustomError(`Menu item not found with id of ${req.body.menuItem}`, 404)
           );
     }
-    const customer = req.params.customerId;
-    const company = menuItem.company;
-    let basket = await Basket.findOne({ customer, company});
+
+    let basket = await Basket.findOne({ customer: req.params.customerId ,company:menuItem.company});
 
     if (!basket) {
         basket = await Basket.create({
@@ -46,7 +47,24 @@ exports.addItemToBasket = asyncHandler( async (req, res, next) => {
         currency: menuItem.price.currency 
     }
     
-    const inOrder = await InOrder.create({
+    let checkIfExist = await InOrder.findOne({ basket: basket._id, menuItem: menuItem._id, removedIngredients });
+
+    let inOrder;
+    if(checkIfExist){
+        price.display = price.display + checkIfExist.price.display;
+        console.log(price);
+        const newQuantity = req.body.quantity + checkIfExist.quantity;
+        console.log(newQuantity);
+
+        inOrder = await InOrder.findByIdAndUpdate(checkIfExist._id, {price,quantity:newQuantity} ,{ 
+            new: true,
+            runValidators: true
+         });
+        checkIfExist = await InOrder.findOne({ basket: basket._id, menuItem: menuItem._id, removedIngredients });
+        return res.status(200).json({ success: true, data: checkIfExist });
+    }
+
+    inOrder = await InOrder.create({
         basket: basket._id,
         menuItem: menuItem._id,
         quantity: req.body.quantity,
@@ -54,4 +72,21 @@ exports.addItemToBasket = asyncHandler( async (req, res, next) => {
         removedIngredients
     });
     res.status(200).json({ success: true, data: inOrder });
+});
+
+// @desc      Remove Item From Basket
+// @route     Delete /api/v1/customers/:customerId/baskets/remove-item
+// @access    Private
+exports.removeItemFromBasket = asyncHandler( async (req, res, next) => {
+    const customer = Customer.findById(req.params.customerId);
+
+    if(req.user.role != 'admin' && customer.user != req.user.id){
+        return next(
+            new CustomError(`Access Denied`, 401)
+        );
+    }
+    console.log(req.body.inOrderId);
+    await InOrder.findByIdAndRemove(req.body.inOrderId);
+
+    res.status(200).json({ success: true, data: [] });
 });

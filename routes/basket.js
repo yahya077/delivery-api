@@ -1,7 +1,8 @@
 const express = require('express');
 
 const { getCustomerBaskets,
-        addItemToBasket        
+        addItemToBasket,
+        removeItemFromBasket       
 }
     = require('../http/controllers/basket');
 
@@ -14,5 +15,7 @@ router.route('/')
 
 router.route('/add-item')
         .post(protect, authorize('admin', 'customer'), addItemToBasket);
+router.route('/remove-item')
+        .delete(protect, authorize('admin', 'customer'), removeItemFromBasket)
 
 module.exports = router;
