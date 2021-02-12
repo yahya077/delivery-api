@@ -22,7 +22,6 @@ exports.getCustomer = asyncHandler(async (req, res, next) => {
         );
       }
   
-        console.log(req.user.id);
     if(req.user.role != 'admin' && customer.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)

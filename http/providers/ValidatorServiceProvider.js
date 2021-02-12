@@ -99,9 +99,12 @@ const menuItem = _ => {
         body('company')
             .trim()
             .notEmpty().withMessage('Company can not be empty'),
-        body('price')
+        body('display')
             .trim()
             .notEmpty().withMessage('Price can not be empty'),
+        body('currency')
+            .trim()
+            .notEmpty().withMessage('Currency can not be empty'),
         ]
 }
 

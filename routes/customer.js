@@ -7,6 +7,7 @@ const { getCustomer,
 
 //Include other resource router
 const addressRouter = require('./address');
+const basketRouter = require('./basket');
 
 const router = express.Router({ mergeParams: true });
 
@@ -16,6 +17,7 @@ const { protect, authorize } = require('../http/middlewares/auth');
 
 // Re-route into other resource routers
 router.use('/:customerId/addresses', addressRouter);
+router.use('/:customerId/baskets', basketRouter);
 
 router.route('/')
         .get(protect, authorize('admin'),advancedResults(Customer,{path:'addresses'}), getCustomers);

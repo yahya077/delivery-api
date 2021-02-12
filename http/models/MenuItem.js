@@ -39,7 +39,7 @@ const MenuItemSchema = new mongoose.Schema({
     price: {
         display : {
             type: Number,
-            set: setPrice
+            required: true
         },
         currency : {
             type: String
@@ -51,9 +51,5 @@ const MenuItemSchema = new mongoose.Schema({
     }
 
 }, { collection:'menuItems', timestamps:true });
-
-function setPrice(num){
-    return num.toFixed(2);
-}
 
 module.exports = mongoose.model('MenuItem', MenuItemSchema);

@@ -29,7 +29,11 @@ exports.getMenuItem = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/menu-items
 // @access    Private
 exports.createMenuItem = asyncHandler(async (req, res, next) => {
-  
+    const price = {
+      display: req.body.display,
+      currency: req.body.currency
+    };
+    req.body.price = price;
     const menuItem = await MenuItem.create(req.body);
   
     res.status(201).json({
