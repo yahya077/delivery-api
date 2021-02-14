@@ -31,4 +31,9 @@ BasketSchema.virtual('inOrders', {
     justOne: false
   });
 
+
+BasketSchema.pre('remove', async function() {
+    await this.model('InOrder').deleteMany({basket:this._id});
+});
+
 module.exports = mongoose.model('Basket', BasketSchema);

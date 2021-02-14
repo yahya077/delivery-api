@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const CustomerSchema = new mongoose.Schema({
+const DriverSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please add a name'],
@@ -17,21 +17,33 @@ const CustomerSchema = new mongoose.Schema({
         type: mongoose.Schema.ObjectId,
         ref: 'User',
         required: [true, 'Invalid user'],
+    },
+    location: {
+        // GeoJSON Point
+        type: {
+          type: String,
+          enum: ['Point']
+        },
+        coordinates: {
+          type: [Number],
+          index: '2dsphere'
+        },
+        formattedAddress: String,
+        street: String,
+        city: String,
+        state: String,
+        zipcode: String,
+        country: String
+    },
+    status: {
+        type: String,
+        enum: ['Online', 'Offline']
     }
 },{
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-    collection: 'customers',
+    collection: 'drivers',
     timestamps: true
 });
 
-// Reverse populate with virtuals
-CustomerSchema.virtual('addresses', {
-    ref: 'Address',
-    localField: '_id',
-    foreignField: 'customer',
-    justOne: false
-});
-
-
-module.exports = mongoose.model('Customer', CustomerSchema);
+module.exports = mongoose.model('Driver', DriverSchema);

@@ -14,6 +14,8 @@ const Company = require('../http/models/Company');
 
 //Include other resource router
 const menuItemRouter = require('./menuItem');
+const orderRouter = require('./order');
+
 
 const router = express.Router({ mergeParams: true });
 
@@ -22,6 +24,7 @@ const { protect, authorize } = require('../http/middlewares/auth');
 
 // Re-route into other resource routers
 router.use('/:id/menu-items', menuItemRouter);
+router.use('/:companyId/orders', orderRouter);
 
 
 router.route('/')
