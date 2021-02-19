@@ -73,25 +73,14 @@ exports.createOrder = asyncHandler( async (req, res, next) => {
 // @access    Private
 exports.getCompanyOrders = asyncHandler( async (req, res, next) => {
     const company = await Company.findById(req.params.companyId);
-
-    const status = req.query.status;
     
     let orders = await Order.find({company: company._id})
-                        .populate([{path:'orderStatuses', match: doc => (status != undefined ? {status} : {})},
+                        .populate([{path:'orderStatuses'},
                         {path: 'basket',
                             populate: {
                             path: 'inOrders',
                             populate: 'menuItem'
-                        }}]).
-                        exec().then((result)=>{
-                            if(status != undefined){
-                                let filtered = result.filter(function(order, index, arr){ 
-                                    return order.orderStatuses && order.orderStatuses.status == status;
-                                });
-                                return filtered;
-                            }
-                            return result;
-                        });                        
+                        }}]);                       
     if(orders == undefined) orders = [];
     res.status(200).json({success: true, data: orders});
 });
@@ -102,24 +91,76 @@ exports.getCompanyOrders = asyncHandler( async (req, res, next) => {
 exports.getCustomerOrders = asyncHandler( async (req, res, next) => {
     const customer = await Customer.findById(req.params.customerId);
 
-    const status = req.query.status;
-
     let orders = await Order.find({customer: customer._id})
-                        .populate([{path:'orderStatuses', match: doc => ({status})},
+                        .populate([{path:'orderStatuses'},
                         {path: 'basket',
                             populate: {
                             path: 'inOrders',
                             populate: 'menuItem'
-                        }}]).
-                        exec().then((result)=>{
-                            if(status != undefined){
-                                let filtered = result.filter(function(order, index, arr){ 
-                                    return order.orderStatuses && order.orderStatuses.status == status;
-                                });
-                                return filtered;
-                            }
-                            return result;
-                        });
+                        }}]);
     if(orders == undefined) orders = [];
     res.status(200).json({success: true, data: orders});
+});
+
+// @desc      Create Order Status
+// @route     POST /api/v1/orders/:id/status
+// @access    Private
+exports.createOrderStatus = asyncHandler( async (req, res, next) => {
+    const order = await Order.findById(req.params.id);
+
+    if(!order)
+        return next(
+            new CustomError(`Order not found with id of ${req.params.id}`, 404)
+          );
+    
+    const status = req.body.status;
+    
+    req.body.order = req.params.id;
+    // TODO: move these controls to a middleware;
+    // Customers only able to change 'canceled by customer' or 'ordered'
+    if(status == 'canceled by customer' || status == 'ordered' || status == 'scheculed'){
+        if(req.user.role != 'customer' && req.user.role != 'admin')
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+        if(req.user.customer && req.user.customer._id != order.customer)
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+    }
+    // Companies only able to change 'canceled by company' or 'prepared'
+    if(status == 'canceled by company' || status == 'prepared' || status == 'accepted by company'){
+        if(req.user.role != 'company' && req.user.role != 'admin')
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+        if(req.user.company && req.user.company._id != order.company)
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+    }
+    // Drivers only able to change 'delivered' or 'driver picked up'
+    if(status == 'delivered' || status == 'driver picked up'){
+        if(req.user.role != 'driver' && req.user.role != 'admin')
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+        // TODO: Check from ride if this driver delivering
+       /*  if(req.user.driver && req.user.driver._id != ride.driver)
+            return next(
+                new CustomError(`Access Denied`, 401)
+            ); */
+    }
+    // Check the role is not equal to 'canceled by system' 
+    if(status == 'canceled by system'){
+        if(req.user.role != 'driver' && req.user.role != 'admin')
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+    }
+
+    const orderStatus = await OrderStatus.create(req.body);
+
+    console.log(orderStatus);
+    res.status(200).json({success:true, data: orderStatus});
 });

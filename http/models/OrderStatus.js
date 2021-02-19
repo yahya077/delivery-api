@@ -8,7 +8,7 @@ const OrderStatusSchema = mongoose.Schema({
     },
     status: {
         type: String,
-        enum: ['ordered', 'scheculed','canceled by company', 'canceled by customer', 'driver picked up', 'canceled by system'],
+        enum: ['ordered', 'prepared', 'scheculed','canceled by company', 'canceled by customer', 'driver picked up', 'canceled by system', 'delivered', 'accepted by company'],
         default: 'ordered',
     },
     reason: {

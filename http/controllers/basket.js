@@ -25,7 +25,7 @@ exports.getCustomerBasket = asyncHandler( async (req, res, next) => {
                         .populate({path:'inOrders', populate: 'menuItem'});
     if(!basket){
         return next(
-            new CustomError(`Basket not found with id of ${req.body.id}`, 404)
+            new CustomError(`Basket not found with id of ${req.params.id}`, 404)
           );
     }
     res.status(200).json({ success: true, data: basket });

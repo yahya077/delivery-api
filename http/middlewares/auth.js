@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('./async');
 const CustomError = require('../helpers/customError');
 const User = require('../models/User');
+const Customer = require('../models/Customer');
+const Company = require('../models/Company');
+const Driver = require('../models/Driver');
 
 // Protect routes
 exports.protect = asyncHandler(async (req, res, next) => {
@@ -30,9 +33,18 @@ exports.protect = asyncHandler(async (req, res, next) => {
 
     req.user = await User.findById(decoded.id);
 
-    if(req.user.status === 'active') next(); // if user is active
-    else return next(new CustomError('Not authorized to access this route', 403));
+    if(req.user.status != 'active')
+      return next(new CustomError('Not authorized to access this route', 403));
+    
+    if(req.user.role == 'customer')
+      req.user.customer = await Customer.findOne({user:req.user._id})
+    else if(req.user.role == 'company')
+      req.user.company = await Company.findOne({user:req.user._id})
+    else if(req.user.role == 'driver')
+      req.user.driver = await Driver.findOne({user:user._id})
+    else console.log("Role is not found or admin");
 
+    next();
   } catch (err) {
     return next(new CustomError('Not authorized to access this route', 403));
   }

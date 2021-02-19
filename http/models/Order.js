@@ -82,7 +82,8 @@ OrderSchema.virtual('orderStatuses', {
     ref: 'OrderStatus',
     localField: '_id',
     foreignField: 'order',
-    justOne: true
+    justOne: false,
+    
 });
 
 module.exports = mongoose.model('Order', OrderSchema);
