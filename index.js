@@ -25,6 +25,7 @@ const customerRoute = require('./routes/customer');
 const addressRoute = require('./routes/address');
 const basketRoute = require('./routes/basket');
 const orderRoute = require('./routes/order');
+const rideRoute = require('./routes/ride');
 
 // Routes initialize
 app.use('/api/v1/auth', authRoute);
@@ -36,6 +37,7 @@ app.use('/api/v1/customers', customerRoute);
 app.use('/api/v1/addresses', addressRoute);
 app.use('/api/v1/baskets', basketRoute);
 app.use('/api/v1/orders', orderRoute);
+app.use('/api/v1/rides', rideRoute);
 
 /** Get port from environment and store in Express. */
 const port = process.env.PORT || "3000";

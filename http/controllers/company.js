@@ -1,6 +1,5 @@
 const CustomError = require('../helpers/customError');
 const asyncHandler = require('../middlewares/async');
-const geocoder = require('../../utils/geocoder');
 const Company = require('../models/Company');
 const User = require('../models/User');
 
