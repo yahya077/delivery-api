@@ -9,16 +9,16 @@ const OrderStatus = require('../models/OrderStatus');
 const Customer = require('../models/Customer');
 
 // @desc      Create Order
-// @route     POST /api/v1/baskets/:basketId/orders
+// @route     POST /api/v1/baskets/:id/orders
 // @access    Private
 exports.createOrder = asyncHandler( async (req, res, next) => {
     const basket = await Basket
-            .findOne({_id:req.params.basketId, status:'active'})
+            .findOne({_id:req.params.id, status:'active'})
             .populate({path:'inOrders', populate: 'menuItem'});
             
     if(!basket){
         return next(
-            new CustomError(`Basket not found with id of ${req.params.basketId}`, 404)
+            new CustomError(`Basket not found with id of ${req.params.id}`, 404)
         );
     }
     const totalPrice = await InOrder.aggregate([
@@ -34,12 +34,18 @@ exports.createOrder = asyncHandler( async (req, res, next) => {
     ]);
     
     const userAddress = await Address.findById(req.body.address);
-    // TODO: fix with adding middleware 
-    if(userAddress.customer != req.user._id && req.user.role != 'admin'){
+    // TODO: fix with adding middleware
+    if(userAddress){
+        if(userAddress.customer != req.user._id && req.user.role != 'admin'){
+            return next(
+                new CustomError(`Access Denied`, 401)
+            );
+        }
+    }else
         return next(
-            new CustomError(`Access Denied`, 401)
+            new CustomError(`Address not found with id of ${req.body.address}`, 404)
         );
-    }
+
 
     const address = {
         phone: userAddress.phone,
@@ -53,7 +59,7 @@ exports.createOrder = asyncHandler( async (req, res, next) => {
     }
 
 
-    req.body.basket = req.params.basketId;
+    req.body.basket = req.params.id;
     req.body.address = address;
     req.body.price = price;
     req.body.customer = userAddress.customer;
@@ -69,12 +75,10 @@ exports.createOrder = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Get Company Orders
-// @route     POST /api/v1/companies/:companyId/orders/company
+// @route     POST /api/v1/companies/:id/orders/company
 // @access    Private
-exports.getCompanyOrders = asyncHandler( async (req, res, next) => {
-    const company = await Company.findById(req.params.companyId);
-    
-    let orders = await Order.find({company: company._id})
+exports.getCompanyOrders = asyncHandler( async (req, res, next) => { 
+    let orders = await Order.find({company: req.model._id})
                         .populate([{path:'orderStatuses'},
                         {path: 'basket',
                             populate: {
@@ -86,12 +90,10 @@ exports.getCompanyOrders = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Get Customer Orders
-// @route     POST /api/v1/customers/:customerId/orders/customer
+// @route     POST /api/v1/customers/:id/orders/customer
 // @access    Private
 exports.getCustomerOrders = asyncHandler( async (req, res, next) => {
-    const customer = await Customer.findById(req.params.customerId);
-
-    let orders = await Order.find({customer: customer._id})
+    let orders = await Order.find({customer: req.model._id})
                         .populate([{path:'orderStatuses'},
                         {path: 'basket',
                             populate: {
@@ -103,19 +105,25 @@ exports.getCustomerOrders = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Create Order Status
-// @route     POST /api/v1/orders/:id/status
+// @route     POST /api/v1/orders/:orderId/status
 // @access    Private
 exports.createOrderStatus = asyncHandler( async (req, res, next) => {
-    const order = await Order.findById(req.params.id);
+    const order = await Order.findById(req.params.orderId);
 
     if(!order)
         return next(
-            new CustomError(`Order not found with id of ${req.params.id}`, 404)
+            new CustomError(`Order not found with id of ${req.params.orderId}`, 404)
           );
     
     const status = req.body.status;
     
-    req.body.order = req.params.id;
+    // check if already set
+    const orderStatusCheck = await OrderStatus.findOne({order: req.params.orderId, status})
+    if(orderStatusCheck)
+    return next(
+        new CustomError(`Already setted`, 400) // bad request
+      );
+    req.body.order = req.params.orderId;
     // TODO: move these controls to a middleware;
     // Customers only able to change 'canceled by customer' or 'ordered'
     if(status == 'canceled by customer' || status == 'ordered' || status == 'scheculed'){

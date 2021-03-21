@@ -12,19 +12,21 @@ const orderRouter = require('./order');
 
 const router = express.Router({ mergeParams: true });
 
+// Middlewares
 const advancedResults = require('../http/middlewares/advancedResults');
+const checkExistModal = require('../http/middlewares/checkExistModal');
 
 const { protect, authorize } = require('../http/middlewares/auth');
 
 // Re-route into other resource routers
-router.use('/:customerId/addresses', addressRouter);
-router.use('/:customerId/baskets', basketRouter);
-router.use('/:customerId/orders', orderRouter);
+router.use('/:id/addresses', checkExistModal(Customer), addressRouter);
+router.use('/:id/baskets', checkExistModal(Customer),basketRouter);
+router.use('/:id/orders', checkExistModal(Customer),orderRouter);
 
 router.route('/')
         .get(protect, authorize('admin'),advancedResults(Customer,{path:'addresses'}), getCustomers);
 
-router.route('/:id')
+router.route('/:customerId')
         .get(protect, authorize('admin', 'customer'), getCustomer);
 
 module.exports = router;

@@ -11,7 +11,7 @@ const { createMenuItem,
 
 const MenuItem = require('../http/models/MenuItem');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 const advancedResults = require('../http/middlewares/advancedResults');
 
@@ -22,7 +22,7 @@ router.route('/')
         path: 'category',
         select: 'name description'
       },'company'), getMenuItems)
-    .post(protect, authorize('admin'),validate.menuItem(),checkValidationError, createMenuItem);
+    .post(protect, authorize('admin','company'),validate.menuItem(),checkValidationError, createMenuItem);
 
 router.route('/:id')
     .get(getMenuItem)

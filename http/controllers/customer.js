@@ -11,14 +11,14 @@ exports.getCustomers = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Get single customer
-// @route     GET /api/v1/customers/:id
+// @route     GET /api/v1/customers/:customerId
 // @access    Private
 exports.getCustomer = asyncHandler(async (req, res, next) => {
-    let customer = await Customer.findById(req.params.id).populate({path:'addresses'});
+    let customer = await Customer.findById(req.params.customerId).populate({path:'addresses'});
 
     if (!customer) {
         return next(
-          new CustomError(`Customer not found with id of ${req.params.id}`, 404)
+          new CustomError(`Customer not found with id of ${req.params.customerId}`, 404)
         );
       }
   

@@ -21,10 +21,11 @@ const router = express.Router({ mergeParams: true });
 
 const advancedResults = require('../http/middlewares/advancedResults');
 const { protect, authorize } = require('../http/middlewares/auth');
+const checkCompany = require('../http/middlewares/checkExistModal');
 
 // Re-route into other resource routers
-router.use('/:id/menu-items', menuItemRouter);
-router.use('/:companyId/orders', orderRouter);
+router.use('/:id/menu-items', checkCompany(Company),menuItemRouter);
+router.use('/:id/orders', checkCompany(Company),orderRouter);
 
 
 router.route('/')

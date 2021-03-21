@@ -80,6 +80,22 @@ const company = _ => {
         ]
 }
 
+const driver = _ => {
+    return [
+        body('name')
+            .trim()
+            .isLength({min:2}).withMessage('Name must be at least 2')
+            .isLength({max:20}).withMessage('Name can not be longer than 20 characters'),
+        body('phone')
+            .trim()
+            .isLength({min:10}).withMessage('Phone number can not be less than 10 characters')
+            .isLength({max:10}).withMessage('Phone number can not be longer than 10 characters'),
+        body('address')
+            .trim()
+            .notEmpty().withMessage('Address can not be empty'),
+        ]
+}
+
 const menuItem = _ => {
     return [
         body('name')
@@ -96,9 +112,6 @@ const menuItem = _ => {
         body('category')
             .trim()
             .notEmpty().withMessage('Category can not be empty'),
-        body('company')
-            .trim()
-            .notEmpty().withMessage('Company can not be empty'),
         body('display')
             .trim()
             .notEmpty().withMessage('Price can not be empty'),
@@ -113,5 +126,6 @@ module.exports = {
     login,
     category,
     company,
+    driver,
     menuItem
 }

@@ -17,7 +17,7 @@ router.route('/company')
         .get(protect, authorize('admin', 'company'), getCompanyOrders);
 router.route('/customer')
         .get(protect, authorize('admin', 'customer'), getCustomerOrders);
-router.route('/:id/status')
+router.route('/:orderId/status')
         .post(protect, createOrderStatus);
         
 module.exports = router;

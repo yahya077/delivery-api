@@ -52,13 +52,13 @@ exports.createCompany = asyncHandler(async (req, res, next) => {
     }
 
   // Check for created company
-  const publishedBootcamp = await Company.findOne({ user: req.params.userId });
+  const companyCheck = await Company.findOne({ user: req.params.userId });
 
-  // Every user has only one company
-  if (publishedBootcamp) {
+  // Every user has only one role
+  if (companyCheck) {
     return next(
       new CustomError(
-        `The user with ID ${req.user.id} has already created a company`,
+        `The user with ID ${req.user.id} already has a role`,
         400
       )
     );

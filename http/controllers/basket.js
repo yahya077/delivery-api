@@ -6,11 +6,11 @@ const InOrder = require('../models/InOrder');
 const MenuItem = require('../models/MenuItem');
 
 // @desc      Get customer basket
-// @route     GET /api/v1/customers/:customerId/baskets
+// @route     GET /api/v1/customers/:id/baskets
 // @access    Private
 exports.getCustomerBaskets = asyncHandler( async (req, res, next) => {
-    console.log(req.params.customerId);
-    let basket = await Basket.findOne({customer: req.params.customerId, status:'active'})
+    console.log(req.params.id);
+    let basket = await Basket.findOne({customer: req.params.id, status:'active'})
                         .populate({path:'inOrders', populate: 'menuItem'});
     if(!basket) basket = []
     
@@ -18,30 +18,23 @@ exports.getCustomerBaskets = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Get Basket By Basket Id
-// @route     GET /api/v1/customers/:customerId/baskets/:id
+// @route     GET /api/v1/customers/:id/baskets/:basketId
 // @access    Private
 exports.getCustomerBasket = asyncHandler( async (req, res, next) => {
-    const basket = await Basket.findOne({_id: req.params.id, status:'active'})
+    const basket = await Basket.findOne({_id: req.params.basketId, status:'active'})
                         .populate({path:'inOrders', populate: 'menuItem'});
     if(!basket){
         return next(
-            new CustomError(`Basket not found with id of ${req.params.id}`, 404)
+            new CustomError(`Basket not found with id of ${req.params.basketId}`, 404)
           );
     }
     res.status(200).json({ success: true, data: basket });
 });
 
 // @desc      Add Item To Basket
-// @route     POST /api/v1/customers/:customerId/baskets/addItem
+// @route     POST /api/v1/customers/:id/baskets/addItem
 // @access    Private
 exports.addItemToBasket = asyncHandler( async (req, res, next) => {
-    const customer = Customer.findById(req.params.customerId);
-    if(req.user.role != 'admin' && customer.user != req.user.id){
-        return next(
-            new CustomError(`Access Denied`, 401)
-        );
-    }
-    
     const menuItem = await MenuItem.findById(req.body.menuItem);
     if (!menuItem) {
         return next(
@@ -49,19 +42,19 @@ exports.addItemToBasket = asyncHandler( async (req, res, next) => {
           );
     }
 
-    let basket = await Basket.findOne({ customer: req.params.customerId});
+    let basket = await Basket.findOne({ customer: req.params.id});
 
     if(basket && basket.company.toString() !== menuItem.company.toString()){
         await basket.remove();
         basket = await Basket.create({
-            customer: req.params.customerId,
+            customer: req.params.id,
             company: menuItem.company
         });
     }
     if (!basket) {
         console.log("asdhasd");
         basket = await Basket.create({
-            customer: req.params.customerId,
+            customer: req.params.id,
             company: menuItem.company
         });
     }
@@ -100,12 +93,10 @@ exports.addItemToBasket = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Remove Item From Basket
-// @route     Delete /api/v1/customers/:customerId/baskets/remove-item
+// @route     Delete /api/v1/customers/:id/baskets/remove-item
 // @access    Private
 exports.removeItemFromBasket = asyncHandler( async (req, res, next) => {
-    const customer = Customer.findById(req.params.customerId);
-
-    if(req.user.role != 'admin' && customer.user != req.user.id){
+    if(req.user.role != 'admin' && req.model.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)
         );
@@ -117,12 +108,10 @@ exports.removeItemFromBasket = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Update Item From Basket
-// @route     Put /api/v1/customers/:customerId/baskets/update-item
+// @route     Put /api/v1/customers/:id/baskets/update-item
 // @access    Private
 exports.updateItemFromBasket = asyncHandler( async (req, res, next) => {
-    const customer = Customer.findById(req.params.customerId);
-
-    if(req.user.role != 'admin' && customer.user != req.user.id){
+    if(req.user.role != 'admin' && req.model.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)
         );

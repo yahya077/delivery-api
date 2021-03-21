@@ -3,27 +3,33 @@ const Customer = require('../models/Customer');
 const Address = require('../models/Address');
 const CustomError = require('../helpers/customError');
 
-// @desc      Get Customer Single Address
-// @route     POST /api/v1/customer/:customerId/addresses/:id
+
+// @desc      Get Customers Addresses
+// @route     POST /api/v1/customer/:customerId/addresses/
 // @access    Private
-exports.getAddress = asyncHandler( async (req, res, next) => {
-    const customer = await Customer.findById(req.params.customerId);
-
-    if (!customer) {
-        return next(
-          new CustomError(`Customer not found with id of ${req.params.customerId}`, 404)
-        );
-    }
-
-
-    console.log(req.user.id);
-    if(req.user.role != 'admin' && customer.user != req.user.id){
+exports.getAddresses = asyncHandler( async (req, res, next) => {
+    if(req.user.role != 'admin' && req.model.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)
         );
     }
 
-    const address = await Address.findOne({ customer:req.params.customerId, _id: req.params.id});
+    const addresses = await Address.find({ customer:req.params.id});
+
+    res.status(200).json({success: true, data: addresses});
+});
+
+// @desc      Get Customer Single Address
+// @route     POST /api/v1/customer/:id/addresses/:addressId
+// @access    Private
+exports.getAddress = asyncHandler( async (req, res, next) => {
+    if(req.user.role != 'admin' && req.model.user != req.user.id){
+        return next(
+            new CustomError(`Access Denied`, 401)
+        );
+    }
+
+    const address = await Address.findOne({ customer:req.params.id, _id: req.params.addressId});
 
     if (!address) {
         return next(
@@ -36,25 +42,17 @@ exports.getAddress = asyncHandler( async (req, res, next) => {
 });
 
 // @desc      Create new Address
-// @route     POST /api/v1/customer/:customerId/addresses
+// @route     POST /api/v1/customer/:id/addresses
 // @access    Private
 exports.createAddress = asyncHandler( async (req, res, next) => {
-
-    const customer = await Customer.findById(req.params.customerId);
-    
-    if (!customer) {
-        return next(
-          new CustomError(`Customer not found with id of ${req.params.customerId}`, 404)
-        );
-    }
-  
-    if(req.user.role != 'admin' && customer.user != req.user.id){
+    if(req.user.role != 'admin' && req.model.user != req.user.id){
         return next(
             new CustomError(`Access Denied`, 401)
         );
     }
 
-    req.body.customer = customer._id;
+    // passing id into body
+    req.body.customer = req.model._id;
 
     const address = await Address.create(req.body)
     

@@ -4,7 +4,7 @@ const MenuItem = require('../models/MenuItem');
 
 // @desc      Get menu items
 // @route     GET /api/v1/menu-items
-// @route     GET /api/v1/companies/:companyId/menu-items
+// @route     GET /api/v1/companies/:id/menu-items
 // @access    Public
 exports.getMenuItems = asyncHandler(async (req, res, next) => {
     res.status(200).json(res.advancedResults);
@@ -26,7 +26,7 @@ exports.getMenuItem = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Create new menu item
-// @route     POST /api/v1/menu-items
+// @route     POST /api/v1/companies/:id/menu-items
 // @access    Private
 exports.createMenuItem = asyncHandler(async (req, res, next) => {
     const price = {
@@ -34,6 +34,8 @@ exports.createMenuItem = asyncHandler(async (req, res, next) => {
       currency: req.body.currency
     };
     req.body.price = price;
+    req.body.company = req.params.id;
+
     const menuItem = await MenuItem.create(req.body);
   
     res.status(201).json({

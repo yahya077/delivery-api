@@ -14,13 +14,14 @@ const orderRouter = require('./order');
 const router = express.Router({ mergeParams: true });
 
 const { protect, authorize } = require('../http/middlewares/auth');
+const checkExistModal = require('../http/middlewares/checkExistModal');
 
 // Re-route into other resource routers
-router.use('/:basketId/orders', orderRouter);
+router.use('/:id/orders', orderRouter);
 
 router.route('/')
         .get(protect, authorize('admin', 'customer'), getCustomerBaskets);
-router.route('/:id')
+router.route('/:basketId')
         .get(protect, authorize('admin', 'customer'), getCustomerBasket);
 // TODO: Add middleware for if customer has that basket
 router.route('/add-item')
