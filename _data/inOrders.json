@@ -1,0 +1,1 @@
+{"_id":{"$oid":"6055044462100047add4c2b4"},"removedIngredients":["Onion","Tomato"],"basket":{"$oid":"6055044462100047add4c2b3"},"menuItem":{"$oid":"60526c475964561db2503318"},"quantity":1,"price":{"display":41.99,"currency":"tl"},"createdAt":{"$date":"2021-03-19T20:06:28.271Z"},"updatedAt":{"$date":"2021-03-19T20:06:28.271Z"},"__v":0}

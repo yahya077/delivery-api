@@ -1,0 +1,70 @@
+[
+    {
+        "role": "admin",
+        "status": "active",
+        "isEmailConfirmed": true,
+        "twoFactorEnable": false,
+        "_id": {
+            "$oid": "6054fdeaace4c705c0a3e73a"
+        },
+        "firstName": "Admin",
+        "lastName": "Wiseyh",
+        "email": "admin@wiseyh.com",
+        "createdAt": "2021-03-17T09:32:15.378Z",
+        "updatedAt": "2021-03-17T09:32:15.450Z",
+        "__v": 0,
+        "confirmEmailToken": "39bd39ee289c113ed744b7e87550f936f37573ff91acc5862c8e65a9ed0db311",
+        "password": "$2b$10$vd/trxkf6S8W05S7bFs08e7xJ6Tov1HZPCOXx9K5aIudJDU8jCTca"  
+    },
+    {
+        "role": "company",
+        "status": "deActive",
+        "isEmailConfirmed": false,
+        "twoFactorEnable": false,
+        "_id": {
+            "$oid": "6051cb1038b78e12a35cd83e"
+        },
+        "firstName": "Loki",
+        "lastName": "Woods",
+        "email": "loki@gmail.com",
+        "createdAt": "2021-03-17T09:25:36.857Z",
+        "updatedAt": "2021-03-17T09:25:36.934Z",
+        "__v": 0,
+        "confirmEmailToken": "520fe535c6a41a289ad7434f8df4289f41fe122e25a89178063361a8d5ccff19",
+        "password": "$2b$10$vd/trxkf6S8W05S7bFs08e7xJ6Tov1HZPCOXx9K5aIudJDU8jCTca"
+    },
+    {
+        "role": "company",
+        "status": "deActive",
+        "isEmailConfirmed": false,
+        "twoFactorEnable": false,
+        "_id": {
+            "$oid": "6051ca298863d7126b9fce9e"
+        },
+        "firstName": "John",
+        "lastName": "Doe",
+        "email": "john@gmail.com",
+        "createdAt": "2021-03-17T09:21:45.233Z",
+        "updatedAt": "2021-03-17T09:21:45.302Z",
+        "__v": 0,
+        "confirmEmailToken": "53160278b02a60b508f6de6d08934dccfd88038a8c322e14f067a4ff91eec14e",
+        "password": "$2b$10$vd/trxkf6S8W05S7bFs08e7xJ6Tov1HZPCOXx9K5aIudJDU8jCTca"
+    },
+    {
+        "role": "customer",
+        "status": "active",
+        "isEmailConfirmed": false,
+        "twoFactorEnable": false,
+        "_id": {
+            "$oid": "6051c9cd8863d7126b9fce9c"
+        },
+        "firstName": "BarnieX",
+        "lastName": "Lockie",
+        "email": "barnie@gmail.com",
+        "createdAt": "2021-03-17T09:20:13.846Z",
+        "updatedAt": "2021-03-17T10:21:03.349Z",
+        "__v": 0,
+        "confirmEmailToken": "81e1f3ec4aa638de9ae5fa21454c8469b8a7a99e3095a2711a2bc7b031216434",
+        "password": "$2b$10$vd/trxkf6S8W05S7bFs08e7xJ6Tov1HZPCOXx9K5aIudJDU8jCTca"
+    }
+]

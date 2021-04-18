@@ -1,0 +1,72 @@
+[
+    {
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.28446,
+                36.36554
+            ],
+            "formattedAddress": "Narenciye Sokak, Antalya, 07350, TR",
+            "street": "Narenciye Sokak",
+            "city": "Antalya",
+            "state": "",
+            "zipcode": "07350",
+            "country": "TR"
+        },
+        "logo": "uploads/images/no-logo.jpg",
+        "type": [
+            "Fast&Food"
+        ],
+        "category": [],
+        "coverImage": "uploads/images/no-image.jpg",
+        "_id": {
+            "$oid": "6051e8401d7e7d1709070438"
+        },
+        "brandName": "Burger King",
+        "phone": "2428870011",
+        "addressDescription": "Near to the mall, infront of the somewhere",
+        "user": {
+            "$oid": "6051cb1038b78e12a35cd83e"
+        },
+        "createdAt": "2021-03-17T11:30:08.627Z",
+        "updatedAt": "2021-03-17T11:30:08.627Z",
+        "__v": 0,
+        "menuItems": [],
+        "id": "6051e8401d7e7d1709070438"
+    },
+    {
+        "location": {
+            "type": "Point",
+            "coordinates": [
+                30.28446,
+                36.36554
+            ],
+            "formattedAddress": "Narenciye Sokak, Antalya, 07350, TR",
+            "street": "Narenciye Sokak",
+            "city": "Antalya",
+            "state": "",
+            "zipcode": "07350",
+            "country": "TR"
+        },
+        "logo": "uploads/images/no-logo.jpg",
+        "type": [
+            "Fast&Food"
+        ],
+        "category": [],
+        "coverImage": "uploads/images/no-image.jpg",
+        "_id": {
+            "$oid": "6051d6c19cf4ed15a0ad56cc"
+        },
+        "brandName": "Burger King",
+        "phone": "2428870011",
+        "addressDescription": "Near to the mall, infront of the somewhere",
+        "user": {
+            "$oid": "6051ca298863d7126b9fce9e"
+        },
+        "createdAt": "2021-03-17T10:15:29.217Z",
+        "updatedAt": "2021-03-17T10:15:29.217Z",
+        "__v": 0,
+        "menuItems": [],
+        "id": "6051d6c19cf4ed15a0ad56cc"
+    }
+]

@@ -1,0 +1,14 @@
+[
+    {
+        "_id": {
+            "$oid": "6051c9cd8863d7126b9fce9d"
+        },
+        "name": "Barnie Lockie",
+        "user": "6051c9cd8863d7126b9fce9c",
+        "createdAt": "2021-03-17T09:20:13.922Z",
+        "updatedAt": "2021-03-17T09:20:13.922Z",
+        "__v": 0,
+        "addresses": [],
+        "id": "6051c9cd8863d7126b9fce9d"
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "price": {
+            "display": 41.99,
+            "currency": "tl"
+        },
+        "ingredients": [
+            "Tomato",
+            "Onion"
+        ],
+        "image": "uploads/images/smoke-house.png",
+        "_id": {
+            "$oid": "60526c475964561db2503318"
+        },
+        "name": "Smoke House",
+        "description": "content content content content content content",
+        "menuName": "Burgers",
+        "category": null,
+        "company": "6051d6c19cf4ed15a0ad56cc",
+        "createdAt": "2021-03-17T20:53:27.571Z",
+        "updatedAt": "2021-03-17T20:53:27.571Z",
+        "__v": 0
+    },
+    {
+        "price": {
+            "display": 21.99,
+            "currency": "tl"
+        },
+        "ingredients": [
+            "Tomato",
+            "Onion"
+        ],
+        "image": "uploads/images/big-mac.png",
+        "_id": {
+            "$oid": "60526ba15964561db2503317"
+        },
+        "name": "Big Mac",
+        "description": "content content content content content content",
+        "menuName": "Burgers",
+        "category": null,
+        "company": "6051d6c19cf4ed15a0ad56cc",
+        "createdAt": "2021-03-17T20:50:41.510Z",
+        "updatedAt": "2021-03-17T20:50:41.510Z",
+        "__v": 0
+    }
+]

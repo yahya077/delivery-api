@@ -1,0 +1,3 @@
+[
+    {"_id":{"$oid":"6055044462100047add4c2b3"},"status":"active","customer":{"$oid":"6051c9cd8863d7126b9fce9d"},"company":{"$oid":"6051d6c19cf4ed15a0ad56cc"},"createdAt":{"$date":"2021-03-19T20:06:28.157Z"},"updatedAt":{"$date":"2021-03-19T20:06:28.157Z"},"__v":0}
+]
